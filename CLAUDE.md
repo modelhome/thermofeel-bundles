@@ -117,12 +117,109 @@ implementation land together in one pull request:
 Repo-wide conventions live in this file; briefs reference them rather than
 restating them.
 
+## The `thermal-indices/` bundle
+
+**US Daily Heat Stress.** Given an optional `date` and `cities`, fetches 62 days of
+hourly Open-Meteo weather per city, computes thermofeel 2.3.0's heat-stress
+indices hourly, reduces them to local-day maxima (wind chill: minimum), and
+reports the last 30 days with Excess Heat / Excess Cold Factors against a
+committed 1991-2020 ERA5 climatology. Brief: `docs/features/0001-thermal-indices.md`;
+plan with every decision and its reasoning: `docs/plans/0001-thermal-indices.md`.
+User-facing documentation: [`thermal-indices/README.md`](./thermal-indices/README.md).
+
+```
+thermal-indices/
+  Modelfile.toml          two JSON outputs; semantic annotations
+  Dockerfile              python:3.12-slim + thermofeel/numpy/tzdata pins
+  runner.py               the model
+  sample_input.json       2026-08-15, Phoenix/Houston/Chicago/Minneapolis
+  cities.json             89 cities: GNIS coordinates, IANA time zone, why included
+  climatology.csv         per-city T95/T05 (built once by build_climatology.py)
+  build_climatology.py    one-time ERA5 build via Copernicus CDS (not in the image)
+  check_indices.py        validation (not in the image)
+  README.md
+```
+
+### Design notes
+
+- **Two JSON outputs, not CSV.** Model Home keeps only `<name>.output.json`, so
+  the long-format table is `heat_indices` (`{metadata, columns, rows}`) and the
+  per-city view is `heat_summary`. The CSV is written beside the summary for
+  off-platform use only. `heat_indices` comes from the stdout redirect;
+  `heat_summary` is an `{output:heat_summary}` arg.
+- **Input default is `{}`.** Schema `default = {}` makes the "Example to paste"
+  what a daily schedule should send. `date` defaults inside the runner to the
+  UTC date; `cities` to `cities.json`.
+- **ERA5 first, forecast for the tail.** The archive (`models=era5`) supplies
+  every day it fully covers; the forecast endpoint supplies the rest (~7 days)
+  and those rows get `is_forecast = true`. Keeps EHF/ECF like-for-like with the
+  ERA5 climatology. A day neither source covers fails the run.
+- **Units at one boundary.** `hourly_indices` takes Celsius, calls thermofeel in
+  Kelvin, returns Celsius. `check_indices.py` exercises that exact function.
+- **Radiation.** `*_instant` Open-Meteo variables; cos(solar zenith) from NOAA's
+  equations; downward longwave estimated (Prata 1996 + Unsworth & Monteith 1975),
+  albedo 0.20, surface emissivity 0.97. Only UTCI depends on the estimates. The
+  measured alternative is CDS ERA5 `surface_thermal_radiation_downwards` (lags
+  ~5 days, needs a key in the container).
+- **EHF/ECF are labelled with the last day of the 3-day mean** (thermofeel labels
+  the first); daily mean = (Tmin + Tmax) / 2 in both runtime and climatology.
+  62 fetched days = 30 output + 33 lookback - 1.
+- **Work/rest bands** from the NIOSH REL (acclimatized, moderate work 300 W, rest
+  117 W). Not configurable yet.
+- **Open-Meteo budget.** Eight hourly variables keep each request at minimum
+  call weight; a full run is ~178 requests, ~450 weighted calls (free tier:
+  10,000/day, non-commercial). A 30-year climatology through Open-Meteo would
+  cost ~70,000, which is why the build uses Copernicus CDS.
+- **Compact JSON outputs** (no indentation), unlike bond: 2,670 rows would be
+  ~2 MB per output indented, ~1.3 MB compact.
+
+### Modelfile
+
+Mirrors `bond`: `run` redirects stdout to `run/heat_indices.output.json`,
+`args = ["{input:heat_request}", "{output:heat_summary}"]`. Adds the Modelfile
+annotation fields Model Home validates (`determinism`, `expected_runtime`,
+`validity_domain`, `not_for`, `provenance`, per-property `unit`). Model Home's
+validator requires a *string* `type` on every required key, so nullable columns
+declare their base type and say when they can be null in the description.
+Validate from the `modelhome` repo with
+`uv run python -m orchestration.modelfile validate <path>/thermal-indices/Modelfile.toml`
+(currently OK, no annotation warnings).
+
+### Verified results (2026-09-16)
+
+- `check_indices.py`: all checks pass. thermofeel 2.3.0 expected values through
+  `hourly_indices`: WBGT simple, apparent temperature, NET, wind chill, Liljegren
+  WBGT, heat force and UTCI exact (max |diff| <= 3e-12 degC); heat index 1.9e-3
+  and humidex 3.4e-3 degC (dew-point round trip). NWS chart 90 degF / 60% ->
+  99.7 degF; Environment Canada -20 degC / 30 km/h -> -32.57; solar zenith within
+  0.006 degrees of pvlib's NREL SPA.
+- Sample (2026-08-15, 4 cities, **placeholder** climatology): 120 rows; Phoenix
+  WBGT 34.5 degC and UTCI 44.7 degC on 2026-08-15; Houston heat index "Danger".
+- Full default run (2026-09-16, 89 cities, **placeholder** climatology):
+  3 min 13 s, 2,670 rows, 7 forecast days per city, every output check passes.
+- Docker build and run (default CMD and the Modelfile's mounted layout) produce
+  rows identical to the local run.
+- **Not yet verified:** the real `climatology.csv` (needs a CDS key), EHF/ECF
+  values from it, and the Model Home import (AC-8).
+
+### Task list
+
+1. Build `climatology.csv` with `build_climatology.py` (needs John's CDS key in
+   `~/.cdsapirc`), sanity-check the thresholds, commit it.
+2. Re-run the sample, the full default run, `check_indices.py --output` and the
+   Docker build with the real table; update the verified results above.
+3. AC-8: add the model on the local Model Home stack from the branch subfolder
+   URL and run it with `{}`; check the run page copes with ~2.6 MB of output.
+4. Mark the PR ready once 1-3 pass; John merges.
+5. After merge: register on Model Home from `main` and put it on a daily
+   schedule with `{}`.
+6. Follow-ups: configurable WBGT workload/acclimatization; measured longwave;
+   the labour-productivity, heat-mortality and cooling-demand sibling bundles
+   consuming `heat_indices` through a Flow.
+
 ## Task list
 
-1. Create `modelhome/thermofeel-bundles` on GitHub (public) and push `main`
-   (boilerplate + vendored `feat`). Confirm with John first.
-2. Build `thermal-indices/` through `feat` (brief 0001).
-3. Register `thermal-indices/` on Model Home from its subfolder URL, run it, and
-   put it on a daily schedule.
-4. Later siblings, composed through a Flow: labour productivity, heat mortality,
+1. ~~Create `modelhome/thermofeel-bundles` on GitHub and push `main`.~~ Done 2026-09-16.
+2. Finish `thermal-indices/` (brief 0001): see that bundle's task list above.
+3. Later siblings, composed through a Flow: labour productivity, heat mortality,
    cooling-energy demand.
