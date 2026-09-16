@@ -1,0 +1,9 @@
+{
+  "date": "2026-08-15",
+  "cities": [
+    {"name": "Phoenix", "state": "AZ", "lat": 33.4484, "lon": -112.074},
+    {"name": "Houston", "state": "TX", "lat": 29.7633, "lon": -95.3633},
+    {"name": "Chicago", "state": "IL", "lat": 41.85, "lon": -87.6501},
+    {"name": "Minneapolis", "state": "MN", "lat": 44.98, "lon": -93.2638}
+  ]
+}

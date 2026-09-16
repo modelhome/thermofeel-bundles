@@ -30,3 +30,6 @@ run/
 .idea/
 .vscode/
 *.swp
+
+# Climatology build download cache (thermal-indices/build_climatology.py)
+.climatology-cache/
