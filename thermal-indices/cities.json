@@ -1,0 +1,1003 @@
+[
+  {
+    "name": "Phoenix",
+    "state": "AZ",
+    "lat": 33.4484,
+    "lon": -112.074,
+    "timezone": "America/Phoenix",
+    "gnis_id": "44784",
+    "groups": [
+      "dry_heat",
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Las Vegas",
+    "state": "NV",
+    "lat": 36.175,
+    "lon": -115.1372,
+    "timezone": "America/Los_Angeles",
+    "gnis_id": "847388",
+    "groups": [
+      "dry_heat"
+    ]
+  },
+  {
+    "name": "Tucson",
+    "state": "AZ",
+    "lat": 32.2217,
+    "lon": -110.9265,
+    "timezone": "America/Phoenix",
+    "gnis_id": "43534",
+    "groups": [
+      "dry_heat"
+    ]
+  },
+  {
+    "name": "Sacramento",
+    "state": "CA",
+    "lat": 38.5816,
+    "lon": -121.4944,
+    "timezone": "America/Los_Angeles",
+    "gnis_id": "1659564",
+    "groups": [
+      "dry_heat",
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Fresno",
+    "state": "CA",
+    "lat": 36.7477,
+    "lon": -119.7724,
+    "timezone": "America/Los_Angeles",
+    "gnis_id": "277606",
+    "groups": [
+      "dry_heat"
+    ]
+  },
+  {
+    "name": "Bakersfield",
+    "state": "CA",
+    "lat": 35.3733,
+    "lon": -119.0187,
+    "timezone": "America/Los_Angeles",
+    "gnis_id": "1652668",
+    "groups": [
+      "dry_heat"
+    ]
+  },
+  {
+    "name": "Riverside",
+    "state": "CA",
+    "lat": 33.9533,
+    "lon": -117.3961,
+    "timezone": "America/Los_Angeles",
+    "gnis_id": "1661315",
+    "groups": [
+      "dry_heat"
+    ]
+  },
+  {
+    "name": "El Paso",
+    "state": "TX",
+    "lat": 31.7587,
+    "lon": -106.4869,
+    "timezone": "America/Denver",
+    "gnis_id": "1380946",
+    "groups": [
+      "dry_heat"
+    ]
+  },
+  {
+    "name": "Albuquerque",
+    "state": "NM",
+    "lat": 35.0845,
+    "lon": -106.6511,
+    "timezone": "America/Denver",
+    "gnis_id": "928679",
+    "groups": [
+      "dry_heat"
+    ]
+  },
+  {
+    "name": "Salt Lake City",
+    "state": "UT",
+    "lat": 40.7608,
+    "lon": -111.891,
+    "timezone": "America/Denver",
+    "gnis_id": "1454997",
+    "groups": [
+      "dry_heat",
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Boise",
+    "state": "ID",
+    "lat": 43.6135,
+    "lon": -116.2035,
+    "timezone": "America/Boise",
+    "gnis_id": "400590",
+    "groups": [
+      "dry_heat",
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Houston",
+    "state": "TX",
+    "lat": 29.7633,
+    "lon": -95.3633,
+    "timezone": "America/Chicago",
+    "gnis_id": "1380948",
+    "groups": [
+      "humid_heat",
+      "largest_non_capital"
+    ]
+  },
+  {
+    "name": "San Antonio",
+    "state": "TX",
+    "lat": 29.4241,
+    "lon": -98.4936,
+    "timezone": "America/Chicago",
+    "gnis_id": "1380951",
+    "groups": [
+      "humid_heat",
+      "largest_non_capital"
+    ]
+  },
+  {
+    "name": "Dallas",
+    "state": "TX",
+    "lat": 32.7831,
+    "lon": -96.8067,
+    "timezone": "America/Chicago",
+    "gnis_id": "1380944",
+    "groups": [
+      "humid_heat",
+      "largest_non_capital"
+    ]
+  },
+  {
+    "name": "Austin",
+    "state": "TX",
+    "lat": 30.2672,
+    "lon": -97.7431,
+    "timezone": "America/Chicago",
+    "gnis_id": "1384879",
+    "groups": [
+      "humid_heat",
+      "state_capital"
+    ]
+  },
+  {
+    "name": "New Orleans",
+    "state": "LA",
+    "lat": 29.9546,
+    "lon": -90.0751,
+    "timezone": "America/Chicago",
+    "gnis_id": "1629985",
+    "groups": [
+      "humid_heat"
+    ]
+  },
+  {
+    "name": "Baton Rouge",
+    "state": "LA",
+    "lat": 30.4507,
+    "lon": -91.1546,
+    "timezone": "America/Chicago",
+    "gnis_id": "1629914",
+    "groups": [
+      "humid_heat",
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Jackson",
+    "state": "MS",
+    "lat": 32.2988,
+    "lon": -90.1848,
+    "timezone": "America/Chicago",
+    "gnis_id": "711543",
+    "groups": [
+      "humid_heat",
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Memphis",
+    "state": "TN",
+    "lat": 35.1495,
+    "lon": -90.049,
+    "timezone": "America/Chicago",
+    "gnis_id": "1326388",
+    "groups": [
+      "humid_heat"
+    ]
+  },
+  {
+    "name": "Little Rock",
+    "state": "AR",
+    "lat": 34.7465,
+    "lon": -92.2896,
+    "timezone": "America/Chicago",
+    "gnis_id": "83350",
+    "groups": [
+      "humid_heat",
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Mobile",
+    "state": "AL",
+    "lat": 30.6944,
+    "lon": -88.0431,
+    "timezone": "America/Chicago",
+    "gnis_id": "155153",
+    "groups": [
+      "humid_heat"
+    ]
+  },
+  {
+    "name": "Miami",
+    "state": "FL",
+    "lat": 25.7743,
+    "lon": -80.1937,
+    "timezone": "America/New_York",
+    "gnis_id": "295004",
+    "groups": [
+      "humid_heat"
+    ]
+  },
+  {
+    "name": "Tampa",
+    "state": "FL",
+    "lat": 27.9475,
+    "lon": -82.4584,
+    "timezone": "America/New_York",
+    "gnis_id": "292005",
+    "groups": [
+      "humid_heat"
+    ]
+  },
+  {
+    "name": "Orlando",
+    "state": "FL",
+    "lat": 28.5383,
+    "lon": -81.3792,
+    "timezone": "America/New_York",
+    "gnis_id": "288240",
+    "groups": [
+      "humid_heat"
+    ]
+  },
+  {
+    "name": "Jacksonville",
+    "state": "FL",
+    "lat": 30.3322,
+    "lon": -81.6557,
+    "timezone": "America/New_York",
+    "gnis_id": "295003",
+    "groups": [
+      "humid_heat",
+      "largest_non_capital"
+    ]
+  },
+  {
+    "name": "Savannah",
+    "state": "GA",
+    "lat": 32.0835,
+    "lon": -81.0998,
+    "timezone": "America/New_York",
+    "gnis_id": "322590",
+    "groups": [
+      "humid_heat"
+    ]
+  },
+  {
+    "name": "Charleston",
+    "state": "SC",
+    "lat": 32.7766,
+    "lon": -79.9309,
+    "timezone": "America/New_York",
+    "gnis_id": "1221516",
+    "groups": [
+      "humid_heat"
+    ]
+  },
+  {
+    "name": "New York",
+    "state": "NY",
+    "lat": 40.7143,
+    "lon": -74.006,
+    "timezone": "America/New_York",
+    "gnis_id": "975772",
+    "groups": [
+      "population_ac_demand",
+      "largest_non_capital"
+    ]
+  },
+  {
+    "name": "Philadelphia",
+    "state": "PA",
+    "lat": 39.9523,
+    "lon": -75.1638,
+    "timezone": "America/New_York",
+    "gnis_id": "1209052",
+    "groups": [
+      "population_ac_demand",
+      "largest_non_capital"
+    ]
+  },
+  {
+    "name": "Washington",
+    "state": "DC",
+    "lat": 38.8951,
+    "lon": -77.0364,
+    "timezone": "America/New_York",
+    "gnis_id": "531871",
+    "groups": [
+      "population_ac_demand"
+    ]
+  },
+  {
+    "name": "Baltimore",
+    "state": "MD",
+    "lat": 39.2904,
+    "lon": -76.6122,
+    "timezone": "America/New_York",
+    "gnis_id": "597040",
+    "groups": [
+      "population_ac_demand"
+    ]
+  },
+  {
+    "name": "Chicago",
+    "state": "IL",
+    "lat": 41.85,
+    "lon": -87.6501,
+    "timezone": "America/Chicago",
+    "gnis_id": "423587",
+    "groups": [
+      "population_ac_demand",
+      "largest_non_capital"
+    ]
+  },
+  {
+    "name": "St. Louis",
+    "state": "MO",
+    "lat": 38.6273,
+    "lon": -90.1979,
+    "timezone": "America/Chicago",
+    "gnis_id": "765765",
+    "groups": [
+      "population_ac_demand"
+    ]
+  },
+  {
+    "name": "Kansas City",
+    "state": "MO",
+    "lat": 39.0997,
+    "lon": -94.5786,
+    "timezone": "America/Chicago",
+    "gnis_id": "748198",
+    "groups": [
+      "population_ac_demand"
+    ]
+  },
+  {
+    "name": "Indianapolis",
+    "state": "IN",
+    "lat": 39.7684,
+    "lon": -86.158,
+    "timezone": "America/Indiana/Indianapolis",
+    "gnis_id": "452890",
+    "groups": [
+      "population_ac_demand",
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Columbus",
+    "state": "OH",
+    "lat": 39.9612,
+    "lon": -82.9988,
+    "timezone": "America/New_York",
+    "gnis_id": "1080996",
+    "groups": [
+      "population_ac_demand",
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Detroit",
+    "state": "MI",
+    "lat": 42.3314,
+    "lon": -83.0458,
+    "timezone": "America/Detroit",
+    "gnis_id": "1617959",
+    "groups": [
+      "population_ac_demand"
+    ]
+  },
+  {
+    "name": "Minneapolis",
+    "state": "MN",
+    "lat": 44.98,
+    "lon": -93.2638,
+    "timezone": "America/Chicago",
+    "gnis_id": "655030",
+    "groups": [
+      "cold"
+    ]
+  },
+  {
+    "name": "Fargo",
+    "state": "ND",
+    "lat": 46.8772,
+    "lon": -96.7898,
+    "timezone": "America/Chicago",
+    "gnis_id": "1028945",
+    "groups": [
+      "cold"
+    ]
+  },
+  {
+    "name": "Bismarck",
+    "state": "ND",
+    "lat": 46.8083,
+    "lon": -100.7837,
+    "timezone": "America/Chicago",
+    "gnis_id": "1035849",
+    "groups": [
+      "cold",
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Great Falls",
+    "state": "MT",
+    "lat": 47.5002,
+    "lon": -111.3008,
+    "timezone": "America/Denver",
+    "gnis_id": "802113",
+    "groups": [
+      "cold"
+    ]
+  },
+  {
+    "name": "Denver",
+    "state": "CO",
+    "lat": 39.7392,
+    "lon": -104.9847,
+    "timezone": "America/Denver",
+    "gnis_id": "201738",
+    "groups": [
+      "cold",
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Buffalo",
+    "state": "NY",
+    "lat": 42.8864,
+    "lon": -78.8784,
+    "timezone": "America/New_York",
+    "gnis_id": "973345",
+    "groups": [
+      "cold"
+    ]
+  },
+  {
+    "name": "Boston",
+    "state": "MA",
+    "lat": 42.3584,
+    "lon": -71.0598,
+    "timezone": "America/New_York",
+    "gnis_id": "617565",
+    "groups": [
+      "cold",
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Portland",
+    "state": "ME",
+    "lat": 43.6615,
+    "lon": -70.2553,
+    "timezone": "America/New_York",
+    "gnis_id": "573692",
+    "groups": [
+      "cold"
+    ]
+  },
+  {
+    "name": "Anchorage",
+    "state": "AK",
+    "lat": 61.2181,
+    "lon": -149.9003,
+    "timezone": "America/Anchorage",
+    "gnis_id": "1398242",
+    "groups": [
+      "cold"
+    ]
+  },
+  {
+    "name": "Seattle",
+    "state": "WA",
+    "lat": 47.6062,
+    "lon": -122.3321,
+    "timezone": "America/Los_Angeles",
+    "gnis_id": "1512650",
+    "groups": [
+      "mild_pacific"
+    ]
+  },
+  {
+    "name": "Portland",
+    "state": "OR",
+    "lat": 45.5235,
+    "lon": -122.6762,
+    "timezone": "America/Los_Angeles",
+    "gnis_id": "1136645",
+    "groups": [
+      "mild_pacific"
+    ]
+  },
+  {
+    "name": "San Francisco",
+    "state": "CA",
+    "lat": 37.775,
+    "lon": -122.4194,
+    "timezone": "America/Los_Angeles",
+    "gnis_id": "277593",
+    "groups": [
+      "mild_pacific"
+    ]
+  },
+  {
+    "name": "Los Angeles",
+    "state": "CA",
+    "lat": 34.0522,
+    "lon": -118.2437,
+    "timezone": "America/Los_Angeles",
+    "gnis_id": "1662328",
+    "groups": [
+      "mild_pacific",
+      "largest_non_capital"
+    ]
+  },
+  {
+    "name": "San Diego",
+    "state": "CA",
+    "lat": 32.7153,
+    "lon": -117.1573,
+    "timezone": "America/Los_Angeles",
+    "gnis_id": "1661377",
+    "groups": [
+      "mild_pacific",
+      "largest_non_capital"
+    ]
+  },
+  {
+    "name": "Montgomery",
+    "state": "AL",
+    "lat": 32.3668,
+    "lon": -86.3,
+    "timezone": "America/Chicago",
+    "gnis_id": "165344",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Juneau",
+    "state": "AK",
+    "lat": 58.3019,
+    "lon": -134.4197,
+    "timezone": "America/Juneau",
+    "gnis_id": "1404263",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Hartford",
+    "state": "CT",
+    "lat": 41.7637,
+    "lon": -72.6851,
+    "timezone": "America/New_York",
+    "gnis_id": "213160",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Dover",
+    "state": "DE",
+    "lat": 39.1582,
+    "lon": -75.5244,
+    "timezone": "America/New_York",
+    "gnis_id": "217882",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Tallahassee",
+    "state": "FL",
+    "lat": 30.4383,
+    "lon": -84.2807,
+    "timezone": "America/New_York",
+    "gnis_id": "308416",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Atlanta",
+    "state": "GA",
+    "lat": 33.749,
+    "lon": -84.388,
+    "timezone": "America/New_York",
+    "gnis_id": "351615",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Honolulu",
+    "state": "HI",
+    "lat": 21.3069,
+    "lon": -157.8583,
+    "timezone": "Pacific/Honolulu",
+    "gnis_id": "366212",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Springfield",
+    "state": "IL",
+    "lat": 39.8017,
+    "lon": -89.6437,
+    "timezone": "America/Chicago",
+    "gnis_id": "426595",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Des Moines",
+    "state": "IA",
+    "lat": 41.6005,
+    "lon": -93.6091,
+    "timezone": "America/Chicago",
+    "gnis_id": "465961",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Topeka",
+    "state": "KS",
+    "lat": 39.0483,
+    "lon": -95.678,
+    "timezone": "America/Chicago",
+    "gnis_id": "485477",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Frankfort",
+    "state": "KY",
+    "lat": 38.2009,
+    "lon": -84.8733,
+    "timezone": "America/New_York",
+    "gnis_id": "517517",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Augusta",
+    "state": "ME",
+    "lat": 44.3106,
+    "lon": -69.7795,
+    "timezone": "America/New_York",
+    "gnis_id": "581636",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Annapolis",
+    "state": "MD",
+    "lat": 38.9784,
+    "lon": -76.4922,
+    "timezone": "America/New_York",
+    "gnis_id": "595031",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Lansing",
+    "state": "MI",
+    "lat": 42.7325,
+    "lon": -84.5555,
+    "timezone": "America/Detroit",
+    "gnis_id": "1625035",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Saint Paul",
+    "state": "MN",
+    "lat": 44.9444,
+    "lon": -93.0933,
+    "timezone": "America/Chicago",
+    "gnis_id": "662851",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Jefferson City",
+    "state": "MO",
+    "lat": 38.5767,
+    "lon": -92.1735,
+    "timezone": "America/Chicago",
+    "gnis_id": "758233",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Helena",
+    "state": "MT",
+    "lat": 46.5927,
+    "lon": -112.0361,
+    "timezone": "America/Denver",
+    "gnis_id": "802116",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Lincoln",
+    "state": "NE",
+    "lat": 40.8,
+    "lon": -96.667,
+    "timezone": "America/Chicago",
+    "gnis_id": "837279",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Carson City",
+    "state": "NV",
+    "lat": 39.1638,
+    "lon": -119.7674,
+    "timezone": "America/Los_Angeles",
+    "gnis_id": "863976",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Concord",
+    "state": "NH",
+    "lat": 43.2081,
+    "lon": -71.5376,
+    "timezone": "America/New_York",
+    "gnis_id": "873303",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Trenton",
+    "state": "NJ",
+    "lat": 40.2171,
+    "lon": -74.7429,
+    "timezone": "America/New_York",
+    "gnis_id": "884540",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Santa Fe",
+    "state": "NM",
+    "lat": 35.687,
+    "lon": -105.9378,
+    "timezone": "America/Denver",
+    "gnis_id": "936823",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Albany",
+    "state": "NY",
+    "lat": 42.6526,
+    "lon": -73.7562,
+    "timezone": "America/New_York",
+    "gnis_id": "977310",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Raleigh",
+    "state": "NC",
+    "lat": 35.7721,
+    "lon": -78.6386,
+    "timezone": "America/New_York",
+    "gnis_id": "1024242",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Oklahoma City",
+    "state": "OK",
+    "lat": 35.4676,
+    "lon": -97.5164,
+    "timezone": "America/Chicago",
+    "gnis_id": "1102140",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Salem",
+    "state": "OR",
+    "lat": 44.9429,
+    "lon": -123.0351,
+    "timezone": "America/Los_Angeles",
+    "gnis_id": "1167861",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Harrisburg",
+    "state": "PA",
+    "lat": 40.2737,
+    "lon": -76.8844,
+    "timezone": "America/New_York",
+    "gnis_id": "1213649",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Providence",
+    "state": "RI",
+    "lat": 41.824,
+    "lon": -71.4128,
+    "timezone": "America/New_York",
+    "gnis_id": "1219851",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Columbia",
+    "state": "SC",
+    "lat": 34.0007,
+    "lon": -81.0348,
+    "timezone": "America/New_York",
+    "gnis_id": "1245051",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Pierre",
+    "state": "SD",
+    "lat": 44.3683,
+    "lon": -100.351,
+    "timezone": "America/Chicago",
+    "gnis_id": "1266887",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Nashville",
+    "state": "TN",
+    "lat": 36.1659,
+    "lon": -86.7844,
+    "timezone": "America/Chicago",
+    "gnis_id": "1652484",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Montpelier",
+    "state": "VT",
+    "lat": 44.2601,
+    "lon": -72.5754,
+    "timezone": "America/New_York",
+    "gnis_id": "1461834",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Richmond",
+    "state": "VA",
+    "lat": 37.5538,
+    "lon": -77.4603,
+    "timezone": "America/New_York",
+    "gnis_id": "1499957",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Olympia",
+    "state": "WA",
+    "lat": 47.0379,
+    "lon": -122.9007,
+    "timezone": "America/Los_Angeles",
+    "gnis_id": "1533353",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Charleston",
+    "state": "WV",
+    "lat": 38.3498,
+    "lon": -81.6326,
+    "timezone": "America/New_York",
+    "gnis_id": "1558347",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Madison",
+    "state": "WI",
+    "lat": 43.0731,
+    "lon": -89.4012,
+    "timezone": "America/Chicago",
+    "gnis_id": "1581834",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Cheyenne",
+    "state": "WY",
+    "lat": 41.14,
+    "lon": -104.8202,
+    "timezone": "America/Denver",
+    "gnis_id": "1609077",
+    "groups": [
+      "state_capital"
+    ]
+  },
+  {
+    "name": "Fort Worth",
+    "state": "TX",
+    "lat": 32.7254,
+    "lon": -97.3208,
+    "timezone": "America/Chicago",
+    "gnis_id": "1380947",
+    "groups": [
+      "largest_non_capital"
+    ]
+  }
+]

@@ -1,0 +1,288 @@
+name = "US Daily Heat Stress"
+description = "Today's heat stress and the last 30 days' trend for 89 US cities (every state capital, the largest cities, and hot, humid, cold and mild examples). Weather comes from Open-Meteo; thermofeel, ECMWF's thermal-comfort library, turns it into feels-like and workplace heat indices (UTCI, WBGT, heat index, humidex and more) plus the Excess Heat and Excess Cold Factors against a 1991-2020 ERA5 baseline. Run it with an empty input to get today; built to run once a day."
+# Prints the heat_indices table JSON to stdout; the platform redirects it to the
+# output file. The runner writes heat_summary itself, to the path in args.
+run = "docker run --rm -v \"$PWD/run:/run\" ${IMAGE} ${ARGS} > run/heat_indices.output.json"
+image = "modelhome/thermofeel-thermal-indices:latest"
+args = ["{input:heat_request}", "{output:heat_summary}"]
+
+# Semantic annotations. Determinism: the code is deterministic, but it reads
+# live weather, so a run is reproducible given `date`, the city list and the
+# upstream Open-Meteo data *as of retrieval*. The newest ~6 days per city come
+# from the forecast endpoint (is_forecast = true) and ERA5 revises them later,
+# so re-running an old date can shift those days slightly. Every run also
+# recomputes all 30 days with the current code, so the trend always reflects
+# the current code version. `retrieved_at` in the output records when.
+determinism = "deterministic"
+expected_runtime = "minutes"
+validity_domain = "US cities (land points) for dates Open-Meteo serves: ERA5 from 1940 and forecasts up to 16 days ahead. Indices are daily maxima of hourly values (wind chill: daily minimum, only where air is -50 to 5 C and wind 5-80 km/h, else null). UTCI and Liljegren WBGT use estimated longwave radiation, albedo 0.20 and surface emissivity 0.97. wbgt_work_category assumes an acclimatized worker doing moderate work (300 W) in normal clothing, per the NIOSH REL; other workloads are not yet configurable."
+not_for = "Official heat warnings (use the National Weather Service), individual medical decisions, or indoor conditions. Not a substitute for on-site WBGT measurement when setting work/rest schedules."
+provenance = "Weather: Open-Meteo (ERA5 archive + forecast API, CC BY 4.0). Indices: thermofeel 2.3.0 (ECMWF, Apache-2.0). EHF/ECF thresholds: ERA5 1991-2020 via Copernicus CDS. City coordinates: USGS GNIS. See the bundle README."
+
+[resources]
+# 89 cities are processed one at a time; the arrays are small.
+memory = "1Gi"
+cpu = "1"
+
+[[inputs]]
+# required = [] everywhere: an empty object is the normal input, and it is what
+# a daily schedule should send. `default = {}` makes the platform's "Example to
+# paste" exactly that; a fixed date there would freeze every schedule built
+# from it on one day.
+name = "heat_request"
+description = "Which day and which cities to report. Leave empty for today and the built-in 89 cities."
+
+[inputs.schema]
+type = "object"
+required = []
+description = "Leave this empty to get today's heat stress for the built-in list of 89 US cities. Fill in either field only to look at a different day or different places."
+default = {}
+
+[inputs.schema.properties.date]
+type = "string"
+format = "date"
+description = "The last day of the 30-day window, as YYYY-MM-DD. Leave it out for today (UTC). Days up to 16 days ahead use forecasts."
+
+[inputs.schema.properties.cities]
+type = "array"
+description = "Places to include instead of the built-in list. The heat and cold factors (ehf, ecf) are only available for cities in the built-in list, matched by name and state; other places get every other index."
+
+[inputs.schema.properties.cities.items]
+type = "object"
+required = ["name", "state", "lat", "lon"]
+description = "One place."
+
+[inputs.schema.properties.cities.items.properties.name]
+type = "string"
+description = "City name as it should appear in the output, e.g. Phoenix."
+
+[inputs.schema.properties.cities.items.properties.state]
+type = "string"
+description = "Two-letter state code, e.g. AZ."
+
+[inputs.schema.properties.cities.items.properties.lat]
+type = "number"
+unit = "degrees north"
+description = "Latitude, -90 to 90."
+
+[inputs.schema.properties.cities.items.properties.lon]
+type = "number"
+unit = "degrees east"
+description = "Longitude, -180 to 180 (US longitudes are negative)."
+
+[[outputs]]
+# One row per city per day: the table downstream damage-function models read.
+name = "heat_indices"
+description = "Daily heat-stress indices for the last 30 days, one row per city per day."
+
+[outputs.schema]
+type = "object"
+required = ["metadata", "columns", "rows"]
+description = "The 30-day table: one row per city per day, oldest day first within each city."
+
+[outputs.schema.properties.metadata]
+type = "object"
+description = "When and how the run was made: date, retrieved_at, data_source, thermofeel_version, numpy_version, tzdata_version, climatology, assumptions, warnings."
+
+[outputs.schema.properties.columns]
+type = "array"
+description = "Column names, in order. Every row has exactly these keys."
+
+[outputs.schema.properties.rows]
+type = "array"
+description = "One object per city and day."
+
+[outputs.schema.properties.rows.items]
+type = "object"
+required = ["city", "state", "lat", "lon", "date", "is_forecast", "wbgt_peak_hour_local", "t2m_c", "rh_pct", "wind_10m_ms", "shortwave_wm2", "t2m_mean_c", "utci_c", "utci_category", "wbgt_c", "wbgt_simple_c", "wbgt_work_category", "heat_index_c", "heat_index_category", "humidex_c", "apparent_temp_c", "net_c", "heat_force", "wind_chill_c", "ehf", "ecf"]
+
+[outputs.schema.properties.rows.items.properties.city]
+type = "string"
+description = "City name."
+
+[outputs.schema.properties.rows.items.properties.state]
+type = "string"
+description = "Two-letter state code."
+
+[outputs.schema.properties.rows.items.properties.lat]
+type = "number"
+unit = "degrees north"
+description = "Latitude of the point the weather was fetched for."
+
+[outputs.schema.properties.rows.items.properties.lon]
+type = "number"
+unit = "degrees east"
+description = "Longitude of the point the weather was fetched for."
+
+[outputs.schema.properties.rows.items.properties.date]
+type = "string"
+format = "date"
+description = "The city's local calendar day."
+
+[outputs.schema.properties.rows.items.properties.is_forecast]
+type = "boolean"
+description = "True when this day's weather came from the forecast endpoint because ERA5 did not cover it yet; these values can change on a later run."
+
+[outputs.schema.properties.rows.items.properties.wbgt_peak_hour_local]
+type = "integer"
+unit = "h"
+description = "Local hour (0-23) when WBGT peaked; the weather columns below are from that hour."
+
+[outputs.schema.properties.rows.items.properties.t2m_c]
+type = "number"
+unit = "degC"
+description = "Air temperature at 2 m at the WBGT peak hour."
+
+[outputs.schema.properties.rows.items.properties.rh_pct]
+type = "number"
+unit = "%"
+description = "Relative humidity at the WBGT peak hour."
+
+[outputs.schema.properties.rows.items.properties.wind_10m_ms]
+type = "number"
+unit = "m/s"
+description = "Wind speed at 10 m at the WBGT peak hour."
+
+[outputs.schema.properties.rows.items.properties.shortwave_wm2]
+type = "number"
+unit = "W/m2"
+description = "Incoming sunlight (global horizontal irradiance) at the WBGT peak hour. Can be null."
+
+[outputs.schema.properties.rows.items.properties.t2m_mean_c]
+type = "number"
+unit = "degC"
+description = "Daily mean temperature, (min + max) / 2, as used by ehf and ecf."
+
+[outputs.schema.properties.rows.items.properties.utci_c]
+type = "number"
+unit = "degC"
+description = "Daily maximum Universal Thermal Climate Index: how the outdoor conditions feel, including sun and wind. Null only if radiation data is missing."
+
+[outputs.schema.properties.rows.items.properties.utci_category]
+type = "string"
+description = "UTCI thermal-stress band, from Extreme cold stress to Extreme heat stress. Null when utci_c is null."
+
+[outputs.schema.properties.rows.items.properties.wbgt_c]
+type = "number"
+unit = "degC"
+description = "Daily maximum Wet Bulb Globe Temperature (Liljegren method, in the sun): the standard workplace heat-stress measure. Null only if the calculation fails for every hour of the day."
+
+[outputs.schema.properties.rows.items.properties.wbgt_simple_c]
+type = "number"
+unit = "degC"
+description = "Daily maximum simplified WBGT from temperature and humidity only (no sun or wind)."
+
+[outputs.schema.properties.rows.items.properties.wbgt_work_category]
+type = "string"
+description = "Recommended work/rest schedule at the daily maximum WBGT for an acclimatized worker doing moderate work (NIOSH REL). Null when wbgt_c is null."
+
+[outputs.schema.properties.rows.items.properties.heat_index_c]
+type = "number"
+unit = "degC"
+description = "Daily maximum heat index (NWS formula, in the shade)."
+
+[outputs.schema.properties.rows.items.properties.heat_index_category]
+type = "string"
+description = "NWS heat index band: None, Caution, Extreme Caution, Danger or Extreme Danger."
+
+[outputs.schema.properties.rows.items.properties.humidex_c]
+type = "number"
+unit = "degC"
+description = "Daily maximum humidex (Environment Canada's humid-heat index)."
+
+[outputs.schema.properties.rows.items.properties.apparent_temp_c]
+type = "number"
+unit = "degC"
+description = "Daily maximum apparent temperature (Steadman, without radiation)."
+
+[outputs.schema.properties.rows.items.properties.net_c]
+type = "number"
+unit = "degC"
+description = "Daily maximum normal effective temperature."
+
+[outputs.schema.properties.rows.items.properties.heat_force]
+type = "integer"
+unit = "1"
+description = "KNMI heat force, 0-10, from the daily maximum WBGT. Null when wbgt_c is null."
+
+[outputs.schema.properties.rows.items.properties.wind_chill_c]
+type = "number"
+unit = "degC"
+description = "Daily minimum wind chill; null on days with no hour cold and windy enough for the formula to apply."
+
+[outputs.schema.properties.rows.items.properties.ehf]
+type = "number"
+unit = "degC2"
+description = "Excess Heat Factor for the 3 days ending on this date: above 0 means heatwave conditions relative to this city's climate. Null for cities outside the built-in list."
+
+[outputs.schema.properties.rows.items.properties.ecf]
+type = "number"
+unit = "degC2"
+description = "Excess Cold Factor for the 3 days ending on this date: below 0 means cold-wave conditions relative to this city's climate. Null for cities outside the built-in list."
+
+[[outputs]]
+# The same values grouped per city, for a map (today) and trend line (history).
+name = "heat_summary"
+description = "The same values grouped by city, with today and a 30-day history, for maps and trend charts."
+
+[outputs.schema]
+type = "object"
+required = ["generated_at", "date", "data_source", "thermofeel_version", "window_days", "cities"]
+description = "The same values grouped by city: each city's newest day plus its 30-day history, ready for a map and trend chart."
+
+[outputs.schema.properties.generated_at]
+type = "string"
+format = "date-time"
+description = "When the outputs were written (UTC)."
+
+[outputs.schema.properties.date]
+type = "string"
+format = "date"
+description = "The last day of the window."
+
+[outputs.schema.properties.data_source]
+type = "string"
+description = "Where the weather came from, with attribution."
+
+[outputs.schema.properties.thermofeel_version]
+type = "string"
+description = "The thermofeel release that computed the indices."
+
+[outputs.schema.properties.window_days]
+type = "integer"
+unit = "d"
+description = "Days of history per city (30)."
+
+[outputs.schema.properties.cities]
+type = "array"
+description = "One entry per city: city, state, lat, lon, today (the newest row) and history (30 rows, oldest first), each row with the heat_indices columns except city, state, lat and lon."
+
+[outputs.schema.properties.cities.items]
+type = "object"
+required = ["city", "state", "lat", "lon", "today", "history"]
+
+[outputs.schema.properties.cities.items.properties.city]
+type = "string"
+description = "City name."
+
+[outputs.schema.properties.cities.items.properties.state]
+type = "string"
+description = "Two-letter state code."
+
+[outputs.schema.properties.cities.items.properties.lat]
+type = "number"
+unit = "degrees north"
+description = "Latitude."
+
+[outputs.schema.properties.cities.items.properties.lon]
+type = "number"
+unit = "degrees east"
+description = "Longitude."
+
+[outputs.schema.properties.cities.items.properties.today]
+type = "object"
+description = "The newest day's values (the same as the last history entry)."
+
+[outputs.schema.properties.cities.items.properties.history]
+type = "array"
+description = "30 daily entries, oldest first."
