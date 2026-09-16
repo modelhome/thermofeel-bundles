@@ -3,6 +3,7 @@
 # github.com/modelhome/thermofeel-bundles/tree/main/thermal-indices):
 #   cd thermal-indices && docker build -t thermofeel-thermal-indices:local .
 #   docker run --rm thermofeel-thermal-indices:local        # uses sample_input.json
+#   mkdir -p run && cp sample_input.json run/heat_request.json
 #   docker run --rm -v "$PWD/run:/run" thermofeel-thermal-indices:local \
 #       /run/heat_request.json /run/heat_summary.output.json > run/heat_indices.output.json
 # The model fetches weather from Open-Meteo, so the container needs network access.
@@ -14,8 +15,7 @@ WORKDIR /app
 # thermofeel is pure Python on numpy. tzdata supplies the time-zone database that
 # python:3.12-slim lacks (used to group hours into each city's local days).
 # Pin for reproducibility.
-RUN pip install --no-cache-dir -U pip \
-    && pip install --no-cache-dir thermofeel==2.3.0 numpy==2.5.3 tzdata==2026.4
+RUN pip install --no-cache-dir thermofeel==2.3.0 numpy==2.5.3 tzdata==2026.4
 
 COPY runner.py cities.json climatology.csv sample_input.json ./
 

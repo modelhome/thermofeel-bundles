@@ -27,6 +27,8 @@ docker run --rm thermofeel-thermal-indices:local   # needs network access
 Or run the runner directly:
 
 ```bash
+# from the repository root
+mkdir -p run
 uv run --no-project --python 3.12 --with thermofeel==2.3.0 --with numpy==2.5.3 \
     --with tzdata==2026.4 python thermal-indices/runner.py thermal-indices/sample_input.json \
     run/heat_summary.output.json > run/heat_indices.output.json

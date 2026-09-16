@@ -34,14 +34,14 @@ schedule with that same empty input.
 **Locally** (needs network access, including for the sample):
 
 ```bash
-# with Docker; the build context is this folder, as on Model Home
-cd thermal-indices
+# with Docker, from this folder (the build context, as on Model Home)
 docker build -t thermofeel-thermal-indices:local .
 docker run --rm thermofeel-thermal-indices:local > heat_indices.json
 
-# or directly with Python 3.12
+# or directly with Python 3.12, from this folder
+mkdir -p run
 uv run --no-project --python 3.12 --with thermofeel==2.3.0 --with numpy==2.5.3 \
-    --with tzdata==2026.4 python thermal-indices/runner.py thermal-indices/sample_input.json \
+    --with tzdata==2026.4 python runner.py sample_input.json \
     run/heat_summary.output.json > run/heat_indices.output.json
 ```
 
@@ -58,7 +58,8 @@ One JSON object. Both fields are optional; `{}` is the normal input.
 | `date` | Last day of the 30-day window, `YYYY-MM-DD` | today (UTC) |
 | `cities` | `[{name, state, lat, lon}, ...]` to use instead of the built-in list | [`cities.json`](./cities.json) |
 
-A missing, empty (`""`) or `null` field falls back to its default. Days up to
+A missing, empty (`""`) or `null` field falls back to its default. Each
+`name` + `state` may appear only once. Days up to
 16 days ahead are allowed and use forecasts. EHF and ECF need a city's
 climatology, so for a custom city that isn't in the built-in list (matched by
 `name` and `state`) they are null and the run records a warning.
@@ -103,12 +104,17 @@ is not saved.
 | `ecf` | °C² | Excess Cold Factor, ≤ 0 |
 
 Nullable: `wind_chill_c` often (see below); `utci_c`, `wbgt_c` and the columns
-derived from them only if radiation is unavailable or the WBGT solver fails for
-every hour (not expected for these cities); `ehf`/`ecf` for custom cities.
+derived from them (`utci_category`, `wbgt_work_category`, `heat_force`,
+`shortwave_wm2`) only if Open-Meteo returns no radiation or cloud data for a
+day, or the WBGT solver fails for every hour (not expected for these cities);
+`ehf`/`ecf` for custom cities. When `wbgt_c` is null, `wbgt_peak_hour_local`
+and the weather columns come from the hour of peak `wbgt_simple_c`. A day
+missing temperature, humidity, wind or pressure fails the run instead.
 
 `metadata` (in `heat_indices`, and at the top level of `heat_summary`) records
 `generated_at`, `retrieved_at`, `date`, `window_days`, `data_source`,
-`thermofeel_version`, the `climatology` source and method, the radiation and
+`thermofeel_version`, `numpy_version`, `tzdata_version` (the time-zone database
+that decides local days), the `climatology` source and method, the radiation and
 workload `assumptions`, and any `warnings`.
 
 ## Cities
@@ -187,8 +193,11 @@ variables keep each request at the lowest call weight under Open-Meteo's
 [terms](https://open-meteo.com/en/terms): a full run costs about 450 of the free
 tier's 10,000 daily calls.
 
-A day that neither source covers completely fails the whole run with the city
-and date on stderr, rather than publishing a map with a gap.
+A day that neither source covers completely (every hour with temperature,
+humidity, wind and pressure) fails the whole run with the city and date on
+stderr, rather than publishing a map with a gap. Missing radiation or cloud
+data doesn't fail the run: UTCI, Liljegren WBGT and what derives from them are
+null for that day.
 
 ## How the indices are computed
 
@@ -211,7 +220,7 @@ and date on stderr, rather than publishing a map with a gap.
 | Apparent temperature | `calculate_apparent_temperature` | Steadman / BoM, no radiation |
 | Normal effective temperature | `calculate_normal_effective_temperature` | |
 | Heat force | `calculate_heat_force` | KNMI 0–10 scale, from the daily max Liljegren WBGT |
-| Wind chill | `calculate_wind_chill` | only hours with air ≤ 5 °C and wind 5–80 km/h, thermofeel's stated validity range; null on days with none |
+| Wind chill | `calculate_wind_chill` | only hours with air −50 to 5 °C and wind 5–80 km/h, thermofeel's stated validity range; null on days with none |
 | EHF, ECF | `excess_heat.*` | see below |
 
 **Solar angle.** thermofeel 2.x no longer computes the sun's position. The

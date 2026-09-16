@@ -62,8 +62,13 @@ def log(message):
 
 
 def cache_path(city):
+    """Keyed by location too, so moving a city's coordinates fetches a new series.
+
+    The time zone isn't part of the key: the download is in UTC and local days
+    are regrouped from it on every run.
+    """
     slug = f"{city['name']}-{city['state']}".lower().replace(" ", "-").replace(".", "")
-    return CACHE_DIR / f"{slug}.csv"
+    return CACHE_DIR / f"{slug}_{city['lat']:.4f}_{city['lon']:.4f}.csv"
 
 
 def download(client, city):

@@ -27,6 +27,7 @@ Celsius. Conversion happens once, in ``hourly_indices``, so names carry their
 unit (``t2_c``, ``t2_k``). Logs go to stderr; stdout carries only the result.
 """
 import csv
+import importlib.metadata
 import json
 import math
 import sys
@@ -65,16 +66,21 @@ FORECAST_URL = "https://api.open-meteo.com/v1/forecast"
 # Radiation uses the *_instant variables: thermofeel's MRT and Liljegren WBGT
 # expect instantaneous fluxes matched to the solar angle at the same moment,
 # not preceding-hour averages.
-HOURLY_VARIABLES = [
+CORE_VARIABLES = [
     "temperature_2m",
     "relative_humidity_2m",
     "wind_speed_10m",
     "surface_pressure",
+]
+# Only UTCI and Liljegren WBGT (and what derives from them) need these. A day
+# missing them is still reported, with those indices null.
+RADIATION_VARIABLES = [
     "cloud_cover",
     "shortwave_radiation_instant",
     "direct_radiation_instant",
     "direct_normal_irradiance_instant",
 ]
+HOURLY_VARIABLES = CORE_VARIABLES + RADIATION_VARIABLES
 DATA_SOURCE = (
     "Open-Meteo: ERA5 reanalysis (archive-api.open-meteo.com/v1/archive, models=era5) "
     "for every day it fully covers; forecast endpoint (api.open-meteo.com/v1/forecast, "
@@ -94,6 +100,7 @@ SURFACE_EMISSIVITY = 0.97
 UTCI_WIND_MIN_MS = 0.5
 UTCI_WIND_MAX_MS = 17.0
 # thermofeel's wind chill is valid for -50..5 degC and 5-80 km/h.
+WIND_CHILL_MIN_T_C = -50.0
 WIND_CHILL_MAX_T_C = 5.0
 WIND_CHILL_MIN_WIND_KMH = 5.0
 WIND_CHILL_MAX_WIND_KMH = 80.0
@@ -179,6 +186,12 @@ def parse_request(spec, today_utc):
     if not isinstance(raw_cities, list):
         raise RunError("cities must be an array of {name, state, lat, lon}")
     cities = [validate_city(entry, index) for index, entry in enumerate(raw_cities)]
+    seen = set()
+    for city in cities:
+        key = (city["name"], city["state"])
+        if key in seen:
+            raise RunError(f"cities lists {city['name']}, {city['state']} more than once")
+        seen.add(key)
     return end_date, cities
 
 
@@ -275,8 +288,9 @@ def local_day_length_hours(day, tz):
 
 
 def is_complete(hours, day, tz):
+    """Every hour of the local day present, with the variables every index needs."""
     return len(hours) == local_day_length_hours(day, tz) and all(
-        value is not None for _, _, values in hours for value in values.values()
+        values[name] is not None for _, _, values in hours for name in CORE_VARIABLES
     )
 
 
@@ -309,6 +323,8 @@ def fetch_window(city, end_date):
             chosen[day], sources[day] = forecast[day], "forecast"
 
     hours = [(day, hour) for day in days for hour in chosen[day]]
+    # Missing radiation values (None) become NaN, which makes the indices that
+    # need them NaN, reported as null.
     arrays = {
         name: np.array([values[name] for _, (_, _, values) in hours], dtype=float)
         for name in HOURLY_VARIABLES
@@ -499,7 +515,10 @@ def daily_rows(city, window, climatology, warnings):
     idx = hourly_indices(t2_c, rh_pct, wind, h["surface_pressure"], ssrd, fdir, cossza, mrt_k)
     wind_kmh = wind * 3.6
     wind_chill_valid = (
-        (t2_c <= WIND_CHILL_MAX_T_C) & (wind_kmh >= WIND_CHILL_MIN_WIND_KMH) & (wind_kmh <= WIND_CHILL_MAX_WIND_KMH)
+        (t2_c >= WIND_CHILL_MIN_T_C)
+        & (t2_c <= WIND_CHILL_MAX_T_C)
+        & (wind_kmh >= WIND_CHILL_MIN_WIND_KMH)
+        & (wind_kmh <= WIND_CHILL_MAX_WIND_KMH)
     )
 
     n_days = len(window["days"])
@@ -578,6 +597,8 @@ def run_metadata(end_date, retrieved_at, warnings):
         "window_days": OUTPUT_DAYS,
         "data_source": DATA_SOURCE,
         "thermofeel_version": tmf.__version__,
+        "numpy_version": np.__version__,
+        "tzdata_version": importlib.metadata.version("tzdata"),
         "climatology": {
             "source": "ERA5 hourly 2m temperature, Copernicus Climate Data Store",
             "period": "1991-2020",

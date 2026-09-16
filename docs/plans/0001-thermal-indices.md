@@ -369,6 +369,21 @@ decisions above.
 - **CLAUDE.md** gained the bundle section; per-bundle user documentation lives in
   `thermal-indices/README.md` (as planned in AC-9).
 
+### Copilot review fixes (PR #1, 2026-09-16)
+
+GitHub Copilot's review raised 10 findings (8 inline, 2 suppressed). Resolved:
+
+- Duplicate `name` + `state` in `cities` is now rejected (it merged two cities' histories).
+- Missing radiation or cloud data no longer fails a run: only temperature, humidity, wind and
+  pressure are required per hour; UTCI, Liljegren WBGT and their derived columns become null.
+  This matches the brief's "emit null rather than guessing". New check 4b covers it.
+- Wind chill now also enforces the −50 °C lower bound of its validity range.
+- Output metadata adds `numpy_version` and `tzdata_version`.
+- The Dockerfile no longer upgrades pip unpinned.
+- The climatology download cache is keyed by coordinates as well as name.
+- Documented commands create `run/` first and use paths correct for their working directory.
+- Not fixable in this PR: `climatology.csv` is still missing (needs the CDS key).
+
 ## Acceptance-criteria traceability
 
 IDs are the brief's, unchanged. "Placeholder climatology" means a scratch-copy
@@ -395,9 +410,9 @@ regression comparison is possible or claimed. Commands run from the repo root wi
 
 | Command | Purpose | Baseline result | Final result |
 |---|---|---|---|
-| `$TF --with pvlib==0.15.2 python thermal-indices/check_indices.py` | AC-5, AC-6: thermofeel expected values through `hourly_indices`, spot values, radiation plausibility, EHF/ECF | n/a (file absent) | All 20 index checks pass: WBGT simple / AT / NET / wind chill / Liljegren / heat force / UTCI exact (≤ 3e-12 °C), heat index 1.9e-3 °C, humidex 3.4e-3 °C, NWS 99.7 °F, EC −32.57 °C, zenith 0.006°, MRT 50.5 / 12.0 / 17.8 °C, EHF 50, ECF −100 |
+| `$TF --with pvlib==0.15.2 python thermal-indices/check_indices.py` | AC-5, AC-6: thermofeel expected values through `hourly_indices`, spot values, radiation plausibility, EHF/ECF, input validation, missing radiation | n/a (file absent) | All 22 index checks pass (after review fixes): WBGT simple / AT / NET / wind chill / Liljegren / heat force / UTCI exact (≤ 3e-12 °C), heat index 1.9e-3 °C, humidex 3.4e-3 °C, NWS 99.7 °F, EC −32.57 °C, zenith 0.006°, MRT 50.5 / 12.0 / 17.8 °C, EHF 50, ECF −100 |
 | `$TF python thermal-indices/runner.py thermal-indices/sample_input.json run/heat_summary.output.json > run/heat_indices.output.json` | AC-3 | n/a | Committed tree: exit 1, "climatology.csv is missing". Scratch copy + placeholder climatology: exit 0, 120 rows, ~5 s |
-| `$TF --with pvlib==0.15.2 python thermal-indices/check_indices.py --output run` | AC-3, AC-6 output checks | n/a | Scratch sample outputs: all 40 checks pass |
+| `$TF --with pvlib==0.15.2 python thermal-indices/check_indices.py --output run` | AC-3, AC-6 output checks | n/a | Scratch sample outputs: all 42 checks pass (after review fixes) |
 | `$TF python thermal-indices/runner.py run/empty.json …` with `{}`, then `check_indices.py --output` | AC-7 | n/a | Scratch copy + placeholder climatology: exit 0, 89 cities, 2,670 rows, 3 min 13 s, 7 forecast days per city, all output checks pass |
 | `cd thermal-indices && docker build … && docker run …` | AC-4 | n/a | Scratch build context + placeholder climatology: build and both run forms exit 0; rows identical to local run. In-repo build blocked on climatology.csv |
 | `uv run python -m orchestration.modelfile validate …/thermal-indices/Modelfile.toml` (in `modelhome`) | AC-2, AC-8: platform accepts the Modelfile | n/a | `OK`; `collect_annotation_warnings` → 0 |

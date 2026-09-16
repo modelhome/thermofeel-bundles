@@ -199,6 +199,8 @@ Validate from the `modelhome` repo with
   3 min 13 s, 2,670 rows, 7 forecast days per city, every output check passes.
 - Docker build and run (default CMD and the Modelfile's mounted layout) produce
   rows identical to the local run.
+- After the Copilot review fixes: 42/42 checks pass on the sample, and the Docker image
+  (no pip upgrade) reproduces the local rows exactly.
 - **Not yet verified:** the real `climatology.csv` (needs a CDS key), EHF/ECF
   values from it, and the Model Home import (AC-8).
 

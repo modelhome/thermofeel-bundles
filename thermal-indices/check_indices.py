@@ -16,6 +16,9 @@ Checks for the thermal-indices bundle. Not part of the model image.
 3. Radiation plausibility: mean radiant temperature for clear-sky noon and night.
 4. EHF / ECF on synthetic series with hand-computed answers, including which
    day a value is attributed to.
+   Also offline input and robustness checks: duplicate cities are rejected, and a
+   window with no radiation data reports null radiation indices instead of
+   failing.
 5. With --output DIR: the schema and plausibility of heat_indices.output.json
    and heat_summary.output.json in DIR.
 
@@ -29,7 +32,7 @@ import io
 import json
 import sys
 import urllib.request
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import numpy as np
@@ -211,6 +214,53 @@ def check_excess_heat():
     check("Lookback length is 33 days", runner.EHF_LOOKBACK_DAYS == 33 and runner.FETCH_DAYS == 62)
 
 
+def check_input_and_missing_radiation():
+    print("\n4b. Input validation and missing radiation")
+    city = {"name": "Testville", "state": "TX", "lat": 30.0, "lon": -97.0}
+    try:
+        runner.parse_request({"cities": [city, dict(city)]}, date(2026, 8, 15))
+        rejected = False
+    except runner.RunError:
+        rejected = True
+    check("Duplicate name + state is rejected", rejected)
+
+    # 62 days x 24 UTC-aligned hours of hot, humid weather with no radiation data.
+    hours = runner.FETCH_DAYS * 24
+    start = datetime(2026, 6, 15, tzinfo=timezone.utc).timestamp()
+    hour_of_day = np.arange(hours) % 24
+    nan = np.full(hours, np.nan)
+    window = {
+        "timezone": "UTC",
+        "days": [date(2026, 6, 15) + timedelta(days=i) for i in range(runner.FETCH_DAYS)],
+        "sources": ["era5"] * runner.FETCH_DAYS,
+        "hourly": {
+            "temperature_2m": 28.0 + 6.0 * np.sin((hour_of_day - 9) / 24 * 2 * np.pi),
+            "relative_humidity_2m": np.full(hours, 60.0),
+            "wind_speed_10m": np.full(hours, 2.0),
+            "surface_pressure": np.full(hours, 1010.0),
+            "cloud_cover": nan,
+            "shortwave_radiation_instant": nan,
+            "direct_radiation_instant": nan,
+            "direct_normal_irradiance_instant": nan,
+            "unix_time": start + 3600.0 * np.arange(hours),
+            "local_hour": hour_of_day,
+            "day_index": np.arange(hours) // 24,
+        },
+    }
+    rows = runner.daily_rows(city, window, {("Testville", "TX"): (30.0, 10.0)}, [])
+    radiation_null = all(
+        r[c] is None for r in rows for c in ("utci_c", "utci_category", "wbgt_c", "wbgt_work_category", "heat_force", "shortwave_wm2")
+    )
+    others_present = all(
+        r[c] is not None for r in rows for c in ("wbgt_simple_c", "heat_index_c", "humidex_c", "net_c", "ehf", "ecf")
+    )
+    check(
+        "No radiation: UTCI/WBGT columns null, other indices present",
+        len(rows) == runner.OUTPUT_DAYS and radiation_null and others_present,
+        f"{len(rows)} rows, peak hour {rows[-1]['wbgt_peak_hour_local']}",
+    )
+
+
 # -----------------------------------------------------------------------------
 # 5. Run outputs
 # -----------------------------------------------------------------------------
@@ -288,6 +338,7 @@ def main():
     check_spot_values()
     check_radiation_plausibility()
     check_excess_heat()
+    check_input_and_missing_radiation()
     if args.output:
         check_outputs(args.output)
 

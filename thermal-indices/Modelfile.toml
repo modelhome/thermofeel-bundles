@@ -15,7 +15,7 @@ args = ["{input:heat_request}", "{output:heat_summary}"]
 # the current code version. `retrieved_at` in the output records when.
 determinism = "deterministic"
 expected_runtime = "minutes"
-validity_domain = "US cities (land points) for dates Open-Meteo serves: ERA5 from 1940 and forecasts up to 16 days ahead. Indices are daily maxima of hourly values (wind chill: daily minimum, only where air <= 5 C and wind 5-80 km/h, else null). UTCI and Liljegren WBGT use estimated longwave radiation, albedo 0.20 and surface emissivity 0.97. wbgt_work_category assumes an acclimatized worker doing moderate work (300 W) in normal clothing, per the NIOSH REL; other workloads are not yet configurable."
+validity_domain = "US cities (land points) for dates Open-Meteo serves: ERA5 from 1940 and forecasts up to 16 days ahead. Indices are daily maxima of hourly values (wind chill: daily minimum, only where air is -50 to 5 C and wind 5-80 km/h, else null). UTCI and Liljegren WBGT use estimated longwave radiation, albedo 0.20 and surface emissivity 0.97. wbgt_work_category assumes an acclimatized worker doing moderate work (300 W) in normal clothing, per the NIOSH REL; other workloads are not yet configurable."
 not_for = "Official heat warnings (use the National Weather Service), individual medical decisions, or indoor conditions. Not a substitute for on-site WBGT measurement when setting work/rest schedules."
 provenance = "Weather: Open-Meteo (ERA5 archive + forecast API, CC BY 4.0). Indices: thermofeel 2.3.0 (ECMWF, Apache-2.0). EHF/ECF thresholds: ERA5 1991-2020 via Copernicus CDS. City coordinates: USGS GNIS. See the bundle README."
 
@@ -82,7 +82,7 @@ description = "The 30-day table: one row per city per day, oldest day first with
 
 [outputs.schema.properties.metadata]
 type = "object"
-description = "When and how the run was made: date, retrieved_at, data_source, thermofeel_version, climatology, assumptions, warnings."
+description = "When and how the run was made: date, retrieved_at, data_source, thermofeel_version, numpy_version, tzdata_version, climatology, assumptions, warnings."
 
 [outputs.schema.properties.columns]
 type = "array"
