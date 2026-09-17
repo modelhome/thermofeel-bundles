@@ -211,14 +211,19 @@ Validate from the `modelhome` repo with
   Because T95 is a whole-year percentile, mild low-seasonality cities read as
   heatwaves for most of late summer (San Diego 29/30 days, Honolulu 28/30);
   that is the method, not a bug, but worth a look before building on EHF.
+  `check_indices.py --output` on that full run passes, including "EHF and ECF
+  populated for every city" (2,670 rows) and EHF >= 0 / ECF <= 0. The Docker
+  image built with the table runs the sample with no warnings, EHF/ECF non-null,
+  and rows identical to a local run.
 - **Not yet verified:** the Model Home import (AC-8).
 
 ### Task list
 
 1. ~~Build `climatology.csv` with `build_climatology.py`, sanity-check the
    thresholds, commit it.~~ Done 2026-09-17.
-2. Re-run the sample, the full default run, `check_indices.py --output` and the
-   Docker build with the real table; update the verified results above.
+2. ~~Re-run the sample, the full default run, `check_indices.py --output` and the
+   Docker build with the real table; update the verified results above.~~ Done
+   2026-09-17.
 3. AC-8: add the model on the local Model Home stack from the branch subfolder
    URL and run it with `{}`; check the run page copes with ~2.6 MB of output.
 4. Mark the PR ready once 1-3 pass; John merges.
