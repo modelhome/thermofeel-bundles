@@ -33,3 +33,7 @@ run/
 
 # Climatology build download cache (thermal-indices/build_climatology.py)
 .climatology-cache/
+
+# Copernicus CDS API key (build_climatology.py reads it from ~/.cdsapirc).
+# It belongs in the home directory; never commit a copy.
+.cdsapirc
